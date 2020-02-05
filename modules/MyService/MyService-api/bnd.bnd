@@ -1,0 +1,10 @@
+Bundle-Name: MyService-api
+Bundle-SymbolicName: com.anderfred.api
+Bundle-Version: 1.0.0
+Export-Package:\
+	com.anderfred.exception,\
+	com.anderfred.model,\
+	com.anderfred.service,\
+	com.anderfred.service.persistence
+-check: EXPORTS
+-includeresource: META-INF/service.xml=../MyService-service/service.xml

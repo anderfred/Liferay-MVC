@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+
+<model-hints>
+	<model name="com.anderfred.model.Vacancy">
+		<field name="id" type="int" />
+		<field name="publishedDate" type="String" />
+		<field name="employer" type="String" />
+		<field name="text" type="String" />
+		<field name="salary" type="String" />
+	</model>
+	<model name="com.anderfred.model.vacancyArea">
+		<field name="id" type="int" />
+		<field name="name" type="String" />
+	</model>
+	<model name="com.anderfred.model.vacancySpec">
+		<field name="id" type="int" />
+		<field name="name" type="String" />
+	</model>
+</model-hints>

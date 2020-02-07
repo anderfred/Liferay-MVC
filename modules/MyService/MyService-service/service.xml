@@ -1,21 +1,14 @@
 <?xml version="1.0"?>
-<!DOCTYPE service-builder PUBLIC "-//Liferay//DTD Service Builder 7.2.0//EN" "http://www.liferay.com/dtd/liferay-service-builder_7_2_0.dtd">
+<!DOCTYPE service-builder PUBLIC "-//Liferay//DTD Service Builder 7.2.0//EN"
+        "http://www.liferay.com/dtd/liferay-service-builder_7_2_0.dtd">
 
 <service-builder dependency-injector="ds" package-path="com.anderfred">
-	<namespace>testApi</namespace>
-	<entity name="Vacancy" local-service="true" remote-service="false" table="vacancy">
-		<column name="id" type="int" primary="true"></column>
-		<column name="publishedDate" type="String"></column>
-		<column name="employer" type="String"></column>
-		<column name="text" type="String"></column>
-		<column name="salary" type="String"></column>
-	</entity>
-	<entity name="vacancyArea" local-service="true" remote-service="false" table="vacancyArea">
-		<column name="id" type="int" primary="true"></column>
-		<column name="name" type="String"></column>
-	</entity>
-	<entity name="vacancySpec" local-service="true" remote-service="false" table="vacancySpec">
-		<column name="id" type="int" primary="true"></column>
-		<column name="name" type="String"></column>
-	</entity>
+    <namespace>testApi</namespace>
+    <entity name="Vacancy" local-service="true" remote-service="false" table="vacancy">
+        <column name="id" type="int" primary="true"></column>
+        <column name="publishedDate" type="String"></column>
+        <column name="employer" type="String"></column>
+        <column name="text" type="String"></column>
+        <column name="salary" type="String"></column>
+    </entity>
 </service-builder>

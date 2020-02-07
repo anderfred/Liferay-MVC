@@ -1,17 +1,15 @@
 package com.anderfred.portlet;
 
 import com.anderfred.constants.MyMVCViewPortletKeys;
-
 import com.anderfred.service.VacancyLocalService;
-import com.liferay.portal.kernel.exception.PortalException;
+import com.anderfred.util.JobHHApiGet;
+import com.anderfred.util.RequestUrl;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
-
-import javax.portlet.*;
-
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
+import javax.portlet.*;
 import java.io.IOException;
 
 /**
@@ -45,8 +43,11 @@ public class MyMVCViewPortlet extends MVCPortlet {
         System.out.println("works");
 
         System.out.println("i think");
-        renderRequest.setAttribute("guestbookId", 43);
-        super.render(renderRequest, renderResponse);
+        /*renderRequest.setAttribute("guestbookId", 43);*/
+        JobHHApiGet.setUrl(RequestUrl.AREA.getUrl());
+        /*for (Map.Entry<Integer, String> entry:JobHHApiGet.parseAreas(JobHHApiGet.getRequest("areas")).entrySet())
+            System.out.println(entry.getKey()+" "+entry.getValue());*/
+                super.render(renderRequest, renderResponse);
     }
 
     @Override
@@ -58,7 +59,7 @@ public class MyMVCViewPortlet extends MVCPortlet {
 
     @ProcessAction(name = "addName")
     public void addName(ActionRequest actionRequest,
-                        ActionResponse actionResponse) throws IOException, PortletException, PortalException, SystemException {
+                        ActionResponse actionResponse) throws  SystemException {
         actionRequest.setAttribute("userName", "Nilang");
     }
 

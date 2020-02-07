@@ -17,20 +17,12 @@ package com.anderfred.service.base;
 import com.anderfred.model.Vacancy;
 import com.anderfred.service.VacancyLocalService;
 import com.anderfred.service.persistence.VacancyPersistence;
-import com.anderfred.service.persistence.vacancyAreaPersistence;
-import com.anderfred.service.persistence.vacancySpecPersistence;
-
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.dao.db.DB;
 import com.liferay.portal.kernel.dao.db.DBManagerUtil;
 import com.liferay.portal.kernel.dao.jdbc.SqlUpdate;
 import com.liferay.portal.kernel.dao.jdbc.SqlUpdateFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DefaultActionableDynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery;
-import com.liferay.portal.kernel.dao.orm.Projection;
+import com.liferay.portal.kernel.dao.orm.*;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.model.PersistedModel;
@@ -42,15 +34,12 @@ import com.liferay.portal.kernel.service.PersistedModelLocalService;
 import com.liferay.portal.kernel.transaction.Transactional;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.PortalUtil;
-
-import java.io.Serializable;
-
-import java.util.List;
-
-import javax.sql.DataSource;
-
 import org.osgi.annotation.versioning.ProviderType;
 import org.osgi.service.component.annotations.Reference;
+
+import javax.sql.DataSource;
+import java.io.Serializable;
+import java.util.List;
 
 /**
  * Provides the base implementation for the vacancy local service.
@@ -384,12 +373,6 @@ public abstract class VacancyLocalServiceBaseImpl
 
 	@Reference
 	protected VacancyPersistence vacancyPersistence;
-
-	@Reference
-	protected vacancyAreaPersistence vacancyAreaPersistence;
-
-	@Reference
-	protected vacancySpecPersistence vacancySpecPersistence;
 
 	@Reference
 	protected com.liferay.counter.kernel.service.CounterLocalService

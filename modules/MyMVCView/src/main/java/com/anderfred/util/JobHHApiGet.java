@@ -6,7 +6,6 @@ import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
-import org.osgi.service.component.annotations.Reference;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -19,34 +18,34 @@ import java.util.List;
 import java.util.Map;
 
 public class JobHHApiGet {
-    private static StringBuilder requestUrl;
-    @Reference
-    static VacancyLocalService vacancyLocalService;
+    private String specParam = "spec";
+    private String areaParam = "areas";
+    private StringBuilder requestUrl;
+    private VacancyLocalService vacancyLocalService;
 
-    private static VacancyLocalService getVacancyLocalService() {
-        return vacancyLocalService;
-    }
-
-    public static void setUrl(String url) {
+    public void setUrl(String url) {
         requestUrl = new StringBuilder();
         requestUrl.append(url);
     }
 
-    public static void addParamToUrl(String param, String value) {
+    public JobHHApiGet(VacancyLocalService vacancyLocalService) {
+        this.vacancyLocalService = vacancyLocalService;
+    }
+
+    public void addParamToUrl(String param, String value) {
         if (!param.isEmpty() && !value.isEmpty()) {
-            if (requestUrl.indexOf("?") != -1) requestUrl.append("?");
+            if (requestUrl.indexOf("?") == -1) requestUrl.append("?");
             requestUrl.append(param).append("=").append(value).append("&");
         }
     }
 
 
-
-    public static JSONArray getRequest(String keyword) throws IOException {
-        JSONArray jsonArray = null;
+    public StringBuilder getRequest() throws IOException {
         if (requestUrl.charAt(requestUrl.length() - 1) == '&') {
             requestUrl.deleteCharAt(requestUrl.length() - 1);
-        }
 
+        }
+        System.out.println("GET URL:" + requestUrl.toString());
         URL urlForGetRequest = new URL(requestUrl.toString());
         String readLine;
         HttpURLConnection connection = (HttpURLConnection) urlForGetRequest.openConnection();
@@ -60,37 +59,95 @@ public class JobHHApiGet {
                 response.append(readLine);
             }
             in.close();
-            try {
-                if (keyword.equals("spec")) response.insert(0, "{spec:").append("}");
-                JSONObject object = JSONFactoryUtil.createJSONObject(response.toString());
-                jsonArray = object.getJSONArray(keyword);
-
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+            connection.disconnect();
+            return response;
         } else {
             System.out.println("GET NOT WORKED");
+            connection.disconnect();
         }
-        connection.disconnect();
-        return jsonArray;
+        return null;
     }
 
-    public static List<Vacancy> parseVacancy(JSONArray array) {
+    public Map<Integer, String> getAreas() {
+        setUrl(RequestUrl.AREA.getUrl());
+        StringBuilder response = null;
+        try {
+            response = getRequest();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        JSONObject object = null;
+        try {
+            object = JSONFactoryUtil.createJSONObject(response.toString());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        JSONArray jsonArray = object.getJSONArray(areaParam);
+        return getIntegerStringMap(jsonArray);
+    }
+
+    private Map<Integer, String> getIntegerStringMap(Iterable<JSONObject> jsonArray) {
+        Map<Integer, String> map = new HashMap<>();
+        for (JSONObject object : jsonArray) {
+            map.put(object.getInt("id"), object.getString("name"));
+        }
+        return map;
+    }
+
+    public Map<Integer, String> getSpecs() {
+        JSONObject jsonObject = null;
+        setUrl(RequestUrl.SPECIALIZATION.getUrl());
+        StringBuilder response = null;
+        try {
+            response = getRequest();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        response.insert(0, "{spec:").append("}");
+        try {
+            jsonObject = JSONFactoryUtil.createJSONObject(response.toString());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        JSONArray jsonArray = jsonObject.getJSONArray(specParam);
+        return getIntegerStringMap(jsonArray);
+    }
+
+    public List<Vacancy> exampleGetRequest() {
         List<Vacancy> list = new ArrayList<>();
-        for (int i = 0; i < array.length(); i++) {
-            JSONObject jsonObject = array.getJSONObject(i);
-            Vacancy vacancy = getVacancyLocalService().createVacancy(jsonObject.getInt("id"));
-            vacancy.setId(jsonObject.getInt("id"));
-            vacancy.setEmployer(getEmployer(jsonObject));
-            vacancy.setPublishedDate(jsonObject.getString("published_id"));
-            vacancy.setSalary(getSalary(jsonObject));
-            vacancy.setText(jsonObject.getString("name"));
+        setUrl(RequestUrl.VACANCY.getUrl());
+        addParamToUrl("specialization", "1");
+        addParamToUrl("area", "4");
+
+        try {
+            for (Vacancy v : parseVacancy((getRequest()))) {
+                list.add(v);
+                System.out.println(v.toString());
+            }
+        } catch (IOException | JSONException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    public List<Vacancy> parseVacancy(StringBuilder response) throws JSONException {
+        JSONObject jsonObject = JSONFactoryUtil.createJSONObject(response.toString());
+        JSONArray jsonArray = jsonObject.getJSONArray("items");
+        List<Vacancy> list = new ArrayList<>();
+        for (int i = 0; i < jsonArray.length(); i++) {
+            JSONObject o = jsonArray.getJSONObject(i);
+            System.out.println(o.getInt("id"));
+            Vacancy vacancy = vacancyLocalService.createVacancy(o.getInt("id"));
+            vacancy.setText(o.getString("name"));
+            vacancy.setSalary(getSalary(o));
+            vacancy.setPublishedDate(o.getString("published_at"));
+            vacancy.setEmployer(getEmployer(o));
             list.add(vacancy);
         }
         return list;
     }
 
-    private static String getEmployer(JSONObject object) {
+    private String getEmployer(JSONObject object) {
         String employer = null;
 
         try {
@@ -102,7 +159,7 @@ public class JobHHApiGet {
         return employer;
     }
 
-    private static String getSalary(JSONObject object) {
+    private String getSalary(JSONObject object) {
         StringBuilder stringBuilder = new StringBuilder();
         try {
             JSONObject jsonObject = JSONFactoryUtil.createJSONObject(object.getString("salary"));
@@ -122,15 +179,5 @@ public class JobHHApiGet {
             e.printStackTrace();
         }
         return stringBuilder.toString();
-    }
-
-    public static Map<Integer, String> parseJSONData(JSONArray array) {
-        Map<Integer, String> map = new HashMap<>();
-
-        for (int i = 0; i < array.length(); i++) {
-            JSONObject jsonObject = array.getJSONObject(i);
-            map.put(jsonObject.getInt("id"), jsonObject.getString("name"));
-        }
-        return map;
     }
 }

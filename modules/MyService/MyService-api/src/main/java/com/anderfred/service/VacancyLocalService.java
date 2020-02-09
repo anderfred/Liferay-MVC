@@ -15,7 +15,6 @@
 package com.anderfred.service;
 
 import com.anderfred.model.Vacancy;
-
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.DynamicQuery;
 import com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery;
@@ -31,12 +30,10 @@ import com.liferay.portal.kernel.transaction.Isolation;
 import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.kernel.transaction.Transactional;
 import com.liferay.portal.kernel.util.OrderByComparator;
+import org.osgi.annotation.versioning.ProviderType;
 
 import java.io.Serializable;
-
 import java.util.List;
-
-import org.osgi.annotation.versioning.ProviderType;
 
 /**
  * Provides the local service interface for Vacancy. Methods of this
@@ -70,6 +67,9 @@ public interface VacancyLocalService
 	 */
 	@Indexable(type = IndexableType.REINDEX)
 	public Vacancy addVacancy(Vacancy vacancy);
+
+	public void createOrUpdateVacancy(List<Vacancy> list)
+		throws PortalException;
 
 	/**
 	 * Creates a new vacancy with the primary key. Does not add the vacancy to the database.
@@ -179,6 +179,9 @@ public interface VacancyLocalService
 	public ActionableDynamicQuery getActionableDynamicQuery();
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public java.util.Map<Integer, String> getAreas();
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public IndexableActionableDynamicQuery getIndexableActionableDynamicQuery();
 
 	/**
@@ -188,10 +191,16 @@ public interface VacancyLocalService
 	 */
 	public String getOSGiServiceIdentifier();
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<Vacancy> getParametrizedRequest(int area, int spec);
+
 	@Override
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public PersistedModel getPersistedModel(Serializable primaryKeyObj)
 		throws PortalException;
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public java.util.Map<Integer, String> getSpecs();
 
 	/**
 	 * Returns a range of all the vacancies.
@@ -224,6 +233,8 @@ public interface VacancyLocalService
 	 */
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public Vacancy getVacancy(int id) throws PortalException;
+
+	public List<Vacancy> makeExampleRequest();
 
 	/**
 	 * Updates the vacancy in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.

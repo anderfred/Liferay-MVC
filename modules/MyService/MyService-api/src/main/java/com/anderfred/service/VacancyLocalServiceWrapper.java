@@ -15,7 +15,6 @@
 package com.anderfred.service;
 
 import com.liferay.portal.kernel.service.ServiceWrapper;
-
 import org.osgi.annotation.versioning.ProviderType;
 
 /**
@@ -44,6 +43,14 @@ public class VacancyLocalServiceWrapper
 		com.anderfred.model.Vacancy vacancy) {
 
 		return _vacancyLocalService.addVacancy(vacancy);
+	}
+
+	@Override
+	public void createOrUpdateVacancy(
+			java.util.List<com.anderfred.model.Vacancy> list)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		_vacancyLocalService.createOrUpdateVacancy(list);
 	}
 
 	/**
@@ -197,6 +204,11 @@ public class VacancyLocalServiceWrapper
 	}
 
 	@Override
+	public java.util.Map<Integer, String> getAreas() {
+		return _vacancyLocalService.getAreas();
+	}
+
+	@Override
 	public com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery
 		getIndexableActionableDynamicQuery() {
 
@@ -214,11 +226,23 @@ public class VacancyLocalServiceWrapper
 	}
 
 	@Override
+	public java.util.List<com.anderfred.model.Vacancy> getParametrizedRequest(
+		int area, int spec) {
+
+		return _vacancyLocalService.getParametrizedRequest(area, spec);
+	}
+
+	@Override
 	public com.liferay.portal.kernel.model.PersistedModel getPersistedModel(
 			java.io.Serializable primaryKeyObj)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _vacancyLocalService.getPersistedModel(primaryKeyObj);
+	}
+
+	@Override
+	public java.util.Map<Integer, String> getSpecs() {
+		return _vacancyLocalService.getSpecs();
 	}
 
 	/**
@@ -261,6 +285,11 @@ public class VacancyLocalServiceWrapper
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _vacancyLocalService.getVacancy(id);
+	}
+
+	@Override
+	public java.util.List<com.anderfred.model.Vacancy> makeExampleRequest() {
+		return _vacancyLocalService.makeExampleRequest();
 	}
 
 	/**

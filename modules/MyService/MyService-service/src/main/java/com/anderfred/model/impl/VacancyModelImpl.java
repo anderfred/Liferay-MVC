@@ -16,29 +16,21 @@ package com.anderfred.model.impl;
 
 import com.anderfred.model.Vacancy;
 import com.anderfred.model.VacancyModel;
-
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.bean.AutoEscapeBeanHandler;
 import com.liferay.portal.kernel.model.CacheModel;
 import com.liferay.portal.kernel.model.ModelWrapper;
 import com.liferay.portal.kernel.model.impl.BaseModelImpl;
 import com.liferay.portal.kernel.util.ProxyUtil;
+import org.osgi.annotation.versioning.ProviderType;
 
 import java.io.Serializable;
-
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationHandler;
-
 import java.sql.Types;
-
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
-
-import org.osgi.annotation.versioning.ProviderType;
 
 /**
  * The base model implementation for the Vacancy service. Represents a row in the &quot;vacancy&quot; database table, with each column mapped to a property of this class.
@@ -63,9 +55,10 @@ public class VacancyModelImpl
 	public static final String TABLE_NAME = "vacancy";
 
 	public static final Object[][] TABLE_COLUMNS = {
-		{"id_", Types.INTEGER}, {"publishedDate", Types.VARCHAR},
+		{"id_", Types.INTEGER}, {"publishedDate", Types.TIMESTAMP},
 		{"employer", Types.VARCHAR}, {"text_", Types.VARCHAR},
-		{"salary", Types.VARCHAR}
+		{"salary", Types.VARCHAR}, {"area", Types.INTEGER},
+		{"spec", Types.INTEGER}
 	};
 
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP =
@@ -73,14 +66,16 @@ public class VacancyModelImpl
 
 	static {
 		TABLE_COLUMNS_MAP.put("id_", Types.INTEGER);
-		TABLE_COLUMNS_MAP.put("publishedDate", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("publishedDate", Types.TIMESTAMP);
 		TABLE_COLUMNS_MAP.put("employer", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("text_", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("salary", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("area", Types.INTEGER);
+		TABLE_COLUMNS_MAP.put("spec", Types.INTEGER);
 	}
 
 	public static final String TABLE_SQL_CREATE =
-		"create table vacancy (id_ INTEGER not null primary key,publishedDate VARCHAR(75) null,employer VARCHAR(75) null,text_ VARCHAR(75) null,salary VARCHAR(75) null)";
+		"create table vacancy (id_ INTEGER not null primary key,publishedDate DATE null,employer VARCHAR(75) null,text_ VARCHAR(75) null,salary VARCHAR(75) null,area INTEGER,spec INTEGER)";
 
 	public static final String TABLE_SQL_DROP = "drop table vacancy";
 
@@ -232,7 +227,7 @@ public class VacancyModelImpl
 			"publishedDate", Vacancy::getPublishedDate);
 		attributeSetterBiConsumers.put(
 			"publishedDate",
-			(BiConsumer<Vacancy, String>)Vacancy::setPublishedDate);
+			(BiConsumer<Vacancy, Date>)Vacancy::setPublishedDate);
 		attributeGetterFunctions.put("employer", Vacancy::getEmployer);
 		attributeSetterBiConsumers.put(
 			"employer", (BiConsumer<Vacancy, String>)Vacancy::setEmployer);
@@ -242,6 +237,12 @@ public class VacancyModelImpl
 		attributeGetterFunctions.put("salary", Vacancy::getSalary);
 		attributeSetterBiConsumers.put(
 			"salary", (BiConsumer<Vacancy, String>)Vacancy::setSalary);
+		attributeGetterFunctions.put("area", Vacancy::getArea);
+		attributeSetterBiConsumers.put(
+			"area", (BiConsumer<Vacancy, Integer>)Vacancy::setArea);
+		attributeGetterFunctions.put("spec", Vacancy::getSpec);
+		attributeSetterBiConsumers.put(
+			"spec", (BiConsumer<Vacancy, Integer>)Vacancy::setSpec);
 
 		_attributeGetterFunctions = Collections.unmodifiableMap(
 			attributeGetterFunctions);
@@ -260,17 +261,12 @@ public class VacancyModelImpl
 	}
 
 	@Override
-	public String getPublishedDate() {
-		if (_publishedDate == null) {
-			return "";
-		}
-		else {
-			return _publishedDate;
-		}
+	public Date getPublishedDate() {
+		return _publishedDate;
 	}
 
 	@Override
-	public void setPublishedDate(String publishedDate) {
+	public void setPublishedDate(Date publishedDate) {
 		_publishedDate = publishedDate;
 	}
 
@@ -320,6 +316,26 @@ public class VacancyModelImpl
 	}
 
 	@Override
+	public int getArea() {
+		return _area;
+	}
+
+	@Override
+	public void setArea(int area) {
+		_area = area;
+	}
+
+	@Override
+	public int getSpec() {
+		return _spec;
+	}
+
+	@Override
+	public void setSpec(int spec) {
+		_spec = spec;
+	}
+
+	@Override
 	public Vacancy toEscapedModel() {
 		if (_escapedModel == null) {
 			Function<InvocationHandler, Vacancy>
@@ -343,6 +359,8 @@ public class VacancyModelImpl
 		vacancyImpl.setEmployer(getEmployer());
 		vacancyImpl.setText(getText());
 		vacancyImpl.setSalary(getSalary());
+		vacancyImpl.setArea(getArea());
+		vacancyImpl.setSpec(getSpec());
 
 		vacancyImpl.resetOriginalValues();
 
@@ -411,12 +429,13 @@ public class VacancyModelImpl
 
 		vacancyCacheModel.id = getId();
 
-		vacancyCacheModel.publishedDate = getPublishedDate();
+		Date publishedDate = getPublishedDate();
 
-		String publishedDate = vacancyCacheModel.publishedDate;
-
-		if ((publishedDate != null) && (publishedDate.length() == 0)) {
-			vacancyCacheModel.publishedDate = null;
+		if (publishedDate != null) {
+			vacancyCacheModel.publishedDate = publishedDate.getTime();
+		}
+		else {
+			vacancyCacheModel.publishedDate = Long.MIN_VALUE;
 		}
 
 		vacancyCacheModel.employer = getEmployer();
@@ -442,6 +461,10 @@ public class VacancyModelImpl
 		if ((salary != null) && (salary.length() == 0)) {
 			vacancyCacheModel.salary = null;
 		}
+
+		vacancyCacheModel.area = getArea();
+
+		vacancyCacheModel.spec = getSpec();
 
 		return vacancyCacheModel;
 	}
@@ -520,10 +543,12 @@ public class VacancyModelImpl
 	private static boolean _finderCacheEnabled;
 
 	private int _id;
-	private String _publishedDate;
+	private Date _publishedDate;
 	private String _employer;
 	private String _text;
 	private String _salary;
+	private int _area;
+	private int _spec;
 	private Vacancy _escapedModel;
 
 }

@@ -16,8 +16,9 @@ package com.anderfred.model;
 
 import com.liferay.portal.kernel.bean.AutoEscape;
 import com.liferay.portal.kernel.model.BaseModel;
-
 import org.osgi.annotation.versioning.ProviderType;
+
+import java.util.Date;
 
 /**
  * The base model interface for the Vacancy service. Represents a row in the &quot;vacancy&quot; database table, with each column mapped to a property of this class.
@@ -72,15 +73,14 @@ public interface VacancyModel extends BaseModel<Vacancy> {
 	 *
 	 * @return the published date of this vacancy
 	 */
-	@AutoEscape
-	public String getPublishedDate();
+	public Date getPublishedDate();
 
 	/**
 	 * Sets the published date of this vacancy.
 	 *
 	 * @param publishedDate the published date of this vacancy
 	 */
-	public void setPublishedDate(String publishedDate);
+	public void setPublishedDate(Date publishedDate);
 
 	/**
 	 * Returns the employer of this vacancy.
@@ -126,5 +126,33 @@ public interface VacancyModel extends BaseModel<Vacancy> {
 	 * @param salary the salary of this vacancy
 	 */
 	public void setSalary(String salary);
+
+	/**
+	 * Returns the area of this vacancy.
+	 *
+	 * @return the area of this vacancy
+	 */
+	public int getArea();
+
+	/**
+	 * Sets the area of this vacancy.
+	 *
+	 * @param area the area of this vacancy
+	 */
+	public void setArea(int area);
+
+	/**
+	 * Returns the spec of this vacancy.
+	 *
+	 * @return the spec of this vacancy
+	 */
+	public int getSpec();
+
+	/**
+	 * Sets the spec of this vacancy.
+	 *
+	 * @param spec the spec of this vacancy
+	 */
+	public void setSpec(int spec);
 
 }

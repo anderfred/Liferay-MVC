@@ -6,9 +6,11 @@
     <namespace>testApi</namespace>
     <entity name="Vacancy" local-service="true" remote-service="false" table="vacancy">
         <column name="id" type="int" primary="true"></column>
-        <column name="publishedDate" type="String"></column>
+        <column name="publishedDate" type="Date"></column>
         <column name="employer" type="String"></column>
         <column name="text" type="String"></column>
         <column name="salary" type="String"></column>
+        <column name="area" type="int"></column>
+        <column name="spec" type="int"></column>
     </entity>
 </service-builder>

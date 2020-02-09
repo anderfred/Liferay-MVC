@@ -3,14 +3,16 @@ package com.anderfred.portlet;
 import com.anderfred.constants.MyMVCViewPortletKeys;
 import com.anderfred.service.VacancyLocalService;
 import com.anderfred.util.JobHHApiGet;
-import com.anderfred.util.RequestUrl;
-import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
+import com.liferay.portal.kernel.util.ParamUtil;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
 import javax.portlet.*;
 import java.io.IOException;
+import java.util.Map;
 
 /**
  * @author fredx
@@ -31,6 +33,17 @@ import java.io.IOException;
         service = Portlet.class
 )
 public class MyMVCViewPortlet extends MVCPortlet {
+
+    private Map<Integer, String> areas;
+    private Map<Integer, String> specs;
+    JobHHApiGet jobHHApiGet;
+
+    {
+        jobHHApiGet = new JobHHApiGet(getVacancyLocalService());
+        areas = jobHHApiGet.getAreas();
+        specs = jobHHApiGet.getSpecs();
+    }
+
     @Reference
     VacancyLocalService vacancyLocalService;
 
@@ -40,27 +53,25 @@ public class MyMVCViewPortlet extends MVCPortlet {
 
     @Override
     public void render(RenderRequest renderRequest, RenderResponse renderResponse) throws IOException, PortletException {
-        System.out.println("works");
 
-        System.out.println("i think");
-        /*renderRequest.setAttribute("guestbookId", 43);*/
-        JobHHApiGet.setUrl(RequestUrl.AREA.getUrl());
-        /*for (Map.Entry<Integer, String> entry:JobHHApiGet.parseAreas(JobHHApiGet.getRequest("areas")).entrySet())
-            System.out.println(entry.getKey()+" "+entry.getValue());*/
-                super.render(renderRequest, renderResponse);
+        renderRequest.setAttribute("areas", areas);
+        _log.info("Areas added to renderAttribute");
+        renderRequest.setAttribute("specs", specs);
+        _log.info("Specs added to renderAttribute");
+        super.render(renderRequest, renderResponse);
     }
 
-    @Override
-    public void doView(RenderRequest renderRequest,
-                       RenderResponse renderResponse) throws IOException, PortletException {
-        renderRequest.setAttribute("name", "nilang");
-        super.doView(renderRequest, renderResponse);
-    }
 
-    @ProcessAction(name = "addName")
-    public void addName(ActionRequest actionRequest,
-                        ActionResponse actionResponse) throws  SystemException {
-        actionRequest.setAttribute("userName", "Nilang");
-    }
+    private static final Log _log = LogFactoryUtil.getLog(
+            MyMVCViewPortlet.class);
 
+    @ProcessAction(name = "showAreaAndSpec")
+    public void greet(ActionRequest request, ActionResponse response) {
+        String specId = ParamUtil.getString(request, "specSelect");
+        String areaId = ParamUtil.getString(request, "areaSelect");
+
+        _log.info("spec: id="+specId+" name="+specs.get(Integer.parseInt(specId)));
+        _log.info("area: id="+areaId+" name="+areas.get(Integer.parseInt(areaId)));
+
+    }
 }

@@ -17,6 +17,7 @@ package com.anderfred.service.impl;
 import com.anderfred.model.Vacancy;
 import com.anderfred.service.base.VacancyLocalServiceBaseImpl;
 import com.anderfred.service.util.JobHHApiGet;
+import com.anderfred.service.util.RequestUrl;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONException;
@@ -60,8 +61,8 @@ public class VacancyLocalServiceImpl extends VacancyLocalServiceBaseImpl {
     public void createOrUpdateVacancy(List<Vacancy> list) throws PortalException {
         int added = 0, updated = 0;
         if (list.size() > 0) {
-            _log.info("createOrUpdateVacancy List size:"+list.size());
-        for (Vacancy v : list) {
+            _log.info("createOrUpdateVacancy List size:" + list.size());
+            for (Vacancy v : list) {
 
                 Optional<Vacancy> optional = Optional.ofNullable(fetchVacancy(v.getId()));
                 if (optional.isPresent()) {
@@ -106,8 +107,14 @@ public class VacancyLocalServiceImpl extends VacancyLocalServiceBaseImpl {
     public List<Vacancy> getParametrizedRequest(int area, int spec) {
         List<Vacancy> list = new ArrayList<>();
         try {
-            jobHHApiGet.parseVacancy(jobHHApiGet.getRequest(), area, spec);
             _log.info("make parse vacancy request, with area:" + area + " spec:" + spec);
+            jobHHApiGet.setUrl(RequestUrl.VACANCY.getUrl());
+            jobHHApiGet.addParamToUrl("specialization", ""+spec);
+            jobHHApiGet.addParamToUrl("area", ""+area);
+            jobHHApiGet.addParamToUrl("per_page", "25");
+
+            list = jobHHApiGet.parseVacancy(jobHHApiGet.getRequest(), area, spec);
+
         } catch (JSONException e) {
             _log.error("parse vacancy error:" + e.getLocalizedMessage(), e);
             e.printStackTrace();
@@ -118,5 +125,6 @@ public class VacancyLocalServiceImpl extends VacancyLocalServiceBaseImpl {
         _log.info("getParametrizedRequest return " + list.size() + " vacancies");
         return list;
     }
+
 
 }

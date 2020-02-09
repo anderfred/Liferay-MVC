@@ -34,6 +34,7 @@ import org.osgi.annotation.versioning.ProviderType;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Provides the local service interface for Vacancy. Methods of this
@@ -179,7 +180,7 @@ public interface VacancyLocalService
 	public ActionableDynamicQuery getActionableDynamicQuery();
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public java.util.Map<Integer, String> getAreas();
+	public Map<Integer, String> getAreas();
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public IndexableActionableDynamicQuery getIndexableActionableDynamicQuery();
@@ -200,7 +201,7 @@ public interface VacancyLocalService
 		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public java.util.Map<Integer, String> getSpecs();
+	public Map<Integer, String> getSpecs();
 
 	/**
 	 * Returns a range of all the vacancies.

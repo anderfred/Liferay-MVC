@@ -2,14 +2,14 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 
 <portlet:actionURL name="showAreaAndSpec" var="showAreaAndSpecUrl">
-    <portlet:param name="jspPage" value="/showStandardData.jsp" />
+    <portlet:param name="jspPage" value="/showAreaAndSpec.jsp" />
  </portlet:actionURL>
 
-<portlet:renderURL var="bladeRender">
+<portlet:actionURL var="showStandardData">
 	<portlet:param name="jspPage" value="/showStandardData.jsp" />
-</portlet:renderURL>
+</portlet:actionURL>
 
-<aui:button href="<%= bladeRender %>" value="Показать вакансии для Новосибирска" />
+<aui:button href="<%= showStandardData %>" value="Показать вакансии для Новосибирска" />
 
 <aui:form action="<%= showAreaAndSpecUrl %>" method="post">
 

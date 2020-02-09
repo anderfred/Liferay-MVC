@@ -1,7 +1,9 @@
 package com.anderfred.portlet;
 
 import com.anderfred.constants.MyMVCViewPortletKeys;
+import com.anderfred.model.Vacancy;
 import com.anderfred.service.VacancyLocalService;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
@@ -11,6 +13,7 @@ import org.osgi.service.component.annotations.Reference;
 
 import javax.portlet.*;
 import java.io.IOException;
+import java.util.List;
 
 /**
  * @author fredx
@@ -34,9 +37,6 @@ public class MyMVCViewPortlet extends MVCPortlet {
     @Reference
     private VacancyLocalService vacancyLocalService;
 
-    public VacancyLocalService getVacancyLocalService() {
-        return vacancyLocalService;
-    }
 
     @Override
     public void render(RenderRequest renderRequest, RenderResponse renderResponse) throws IOException, PortletException {
@@ -54,13 +54,33 @@ public class MyMVCViewPortlet extends MVCPortlet {
             MyMVCViewPortlet.class);
 
     @ProcessAction(name = "showAreaAndSpec")
-    public void greet(ActionRequest request, ActionResponse response) {
+    public void showAreaAndSpec(ActionRequest request, ActionResponse response) {
         String specId = ParamUtil.getString(request, "specSelect");
         String areaId = ParamUtil.getString(request, "areaSelect");
 
         _log.info("spec: id=" + specId + " name=" + vacancyLocalService.getSpecs().get(Integer.parseInt(specId)));
         _log.info("area: id=" + areaId + " name=" + vacancyLocalService.getAreas().get(Integer.parseInt(areaId)));
-        request.setAttribute("fred", "q2edasd");
+        List<Vacancy> list = vacancyLocalService.getParametrizedRequest(Integer.parseInt(areaId), Integer.parseInt(specId));
+        try {
+            vacancyLocalService.createOrUpdateVacancy(list);
+        } catch (PortalException e) {
+            e.printStackTrace();
+        }
+
+        request.setAttribute("paramList", list);
+
+    }
+
+    @ProcessAction(name = "showStandardData")
+    public void showStandardData(ActionRequest request, ActionResponse response) {
+        List<Vacancy> list = vacancyLocalService.getParametrizedRequest(1, 4);
+        try {
+            vacancyLocalService.createOrUpdateVacancy(list);
+        } catch (PortalException e) {
+            e.printStackTrace();
+        }
+
+        request.setAttribute("vacancyList", list);
 
     }
 

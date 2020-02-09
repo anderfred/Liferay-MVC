@@ -1,4 +1,4 @@
-package com.anderfred.util;
+package com.anderfred.service.util;
 
 public enum RequestUrl {
     VACANCY("https://api.hh.ru/vacancies"),

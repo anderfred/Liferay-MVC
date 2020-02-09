@@ -1,8 +1,9 @@
 package com.anderfred.portlet;
 
 import com.anderfred.constants.MyMVCViewPortletKeys;
+import com.anderfred.model.Vacancy;
 import com.anderfred.service.VacancyLocalService;
-import com.anderfred.util.JobHHApiGet;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
@@ -12,7 +13,7 @@ import org.osgi.service.component.annotations.Reference;
 
 import javax.portlet.*;
 import java.io.IOException;
-import java.util.Map;
+import java.util.List;
 
 /**
  * @author fredx
@@ -33,31 +34,18 @@ import java.util.Map;
         service = Portlet.class
 )
 public class MyMVCViewPortlet extends MVCPortlet {
-
-    private Map<Integer, String> areas;
-    private Map<Integer, String> specs;
-    JobHHApiGet jobHHApiGet;
-
-    {
-        jobHHApiGet = new JobHHApiGet(getVacancyLocalService());
-        areas = jobHHApiGet.getAreas();
-        specs = jobHHApiGet.getSpecs();
-    }
-
     @Reference
-    VacancyLocalService vacancyLocalService;
+    private VacancyLocalService vacancyLocalService;
 
-    private VacancyLocalService getVacancyLocalService() {
-        return vacancyLocalService;
-    }
 
     @Override
     public void render(RenderRequest renderRequest, RenderResponse renderResponse) throws IOException, PortletException {
 
-        renderRequest.setAttribute("areas", areas);
+        renderRequest.setAttribute("areas", vacancyLocalService.getAreas());
         _log.info("Areas added to renderAttribute");
-        renderRequest.setAttribute("specs", specs);
+        renderRequest.setAttribute("specs", vacancyLocalService.getSpecs());
         _log.info("Specs added to renderAttribute");
+        renderRequest.setAttribute("vacancyList", vacancyLocalService.makeExampleRequest());
         super.render(renderRequest, renderResponse);
     }
 
@@ -66,12 +54,34 @@ public class MyMVCViewPortlet extends MVCPortlet {
             MyMVCViewPortlet.class);
 
     @ProcessAction(name = "showAreaAndSpec")
-    public void greet(ActionRequest request, ActionResponse response) {
+    public void showAreaAndSpec(ActionRequest request, ActionResponse response) {
         String specId = ParamUtil.getString(request, "specSelect");
         String areaId = ParamUtil.getString(request, "areaSelect");
 
-        _log.info("spec: id="+specId+" name="+specs.get(Integer.parseInt(specId)));
-        _log.info("area: id="+areaId+" name="+areas.get(Integer.parseInt(areaId)));
+        _log.info("spec: id=" + specId + " name=" + vacancyLocalService.getSpecs().get(Integer.parseInt(specId)));
+        _log.info("area: id=" + areaId + " name=" + vacancyLocalService.getAreas().get(Integer.parseInt(areaId)));
+        List<Vacancy> list = vacancyLocalService.getParametrizedRequest(Integer.parseInt(areaId), Integer.parseInt(specId));
+        try {
+            vacancyLocalService.createOrUpdateVacancy(list);
+        } catch (PortalException e) {
+            e.printStackTrace();
+        }
+
+        request.setAttribute("paramList", list);
 
     }
+
+    @ProcessAction(name = "showStandardData")
+    public void showStandardData(ActionRequest request, ActionResponse response) {
+        List<Vacancy> list = vacancyLocalService.getParametrizedRequest(1, 4);
+        try {
+            vacancyLocalService.createOrUpdateVacancy(list);
+        } catch (PortalException e) {
+            e.printStackTrace();
+        }
+
+        request.setAttribute("vacancyList", list);
+
+    }
+
 }

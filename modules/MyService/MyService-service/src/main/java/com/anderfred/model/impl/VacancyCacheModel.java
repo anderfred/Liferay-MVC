@@ -15,17 +15,16 @@
 package com.anderfred.model.impl;
 
 import com.anderfred.model.Vacancy;
-
 import com.liferay.petra.lang.HashUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.model.CacheModel;
+import org.osgi.annotation.versioning.ProviderType;
 
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-
-import org.osgi.annotation.versioning.ProviderType;
+import java.util.Date;
 
 /**
  * The cache model class for representing Vacancy in entity cache.
@@ -62,7 +61,7 @@ public class VacancyCacheModel implements CacheModel<Vacancy>, Externalizable {
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(11);
+		StringBundler sb = new StringBundler(15);
 
 		sb.append("{id=");
 		sb.append(id);
@@ -74,6 +73,10 @@ public class VacancyCacheModel implements CacheModel<Vacancy>, Externalizable {
 		sb.append(text);
 		sb.append(", salary=");
 		sb.append(salary);
+		sb.append(", area=");
+		sb.append(area);
+		sb.append(", spec=");
+		sb.append(spec);
 		sb.append("}");
 
 		return sb.toString();
@@ -85,11 +88,11 @@ public class VacancyCacheModel implements CacheModel<Vacancy>, Externalizable {
 
 		vacancyImpl.setId(id);
 
-		if (publishedDate == null) {
-			vacancyImpl.setPublishedDate("");
+		if (publishedDate == Long.MIN_VALUE) {
+			vacancyImpl.setPublishedDate(null);
 		}
 		else {
-			vacancyImpl.setPublishedDate(publishedDate);
+			vacancyImpl.setPublishedDate(new Date(publishedDate));
 		}
 
 		if (employer == null) {
@@ -113,6 +116,9 @@ public class VacancyCacheModel implements CacheModel<Vacancy>, Externalizable {
 			vacancyImpl.setSalary(salary);
 		}
 
+		vacancyImpl.setArea(area);
+		vacancyImpl.setSpec(spec);
+
 		vacancyImpl.resetOriginalValues();
 
 		return vacancyImpl;
@@ -121,22 +127,20 @@ public class VacancyCacheModel implements CacheModel<Vacancy>, Externalizable {
 	@Override
 	public void readExternal(ObjectInput objectInput) throws IOException {
 		id = objectInput.readInt();
-		publishedDate = objectInput.readUTF();
+		publishedDate = objectInput.readLong();
 		employer = objectInput.readUTF();
 		text = objectInput.readUTF();
 		salary = objectInput.readUTF();
+
+		area = objectInput.readInt();
+
+		spec = objectInput.readInt();
 	}
 
 	@Override
 	public void writeExternal(ObjectOutput objectOutput) throws IOException {
 		objectOutput.writeInt(id);
-
-		if (publishedDate == null) {
-			objectOutput.writeUTF("");
-		}
-		else {
-			objectOutput.writeUTF(publishedDate);
-		}
+		objectOutput.writeLong(publishedDate);
 
 		if (employer == null) {
 			objectOutput.writeUTF("");
@@ -158,12 +162,18 @@ public class VacancyCacheModel implements CacheModel<Vacancy>, Externalizable {
 		else {
 			objectOutput.writeUTF(salary);
 		}
+
+		objectOutput.writeInt(area);
+
+		objectOutput.writeInt(spec);
 	}
 
 	public int id;
-	public String publishedDate;
+	public long publishedDate;
 	public String employer;
 	public String text;
 	public String salary;
+	public int area;
+	public int spec;
 
 }

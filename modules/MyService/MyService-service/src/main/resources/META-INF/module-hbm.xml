@@ -3,18 +3,16 @@
         "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 
 <hibernate-mapping auto-import="false" default-lazy="false">
-    <import class="com.anderfred.model.Vacancy"/>
-    <class name="com.anderfred.model.impl.VacancyImpl" table="vacancy">
-        <id access="com.liferay.portal.dao.orm.hibernate.LiferayPropertyAccessor" column="id_" name="id" type="int">
-            <generator class="assigned"/>
-        </id>
-        <property access="com.liferay.portal.dao.orm.hibernate.LiferayPropertyAccessor" name="publishedDate"
-                  type="com.liferay.portal.dao.orm.hibernate.StringType"/>
-        <property access="com.liferay.portal.dao.orm.hibernate.LiferayPropertyAccessor" name="employer"
-                  type="com.liferay.portal.dao.orm.hibernate.StringType"/>
-        <property access="com.liferay.portal.dao.orm.hibernate.LiferayPropertyAccessor" column="text_" name="text"
-                  type="com.liferay.portal.dao.orm.hibernate.StringType"/>
-        <property access="com.liferay.portal.dao.orm.hibernate.LiferayPropertyAccessor" name="salary"
-                  type="com.liferay.portal.dao.orm.hibernate.StringType"/>
-    </class>
+	<import class="com.anderfred.model.Vacancy" />
+	<class name="com.anderfred.model.impl.VacancyImpl" table="vacancy">
+		<id access="com.liferay.portal.dao.orm.hibernate.LiferayPropertyAccessor" column="id_" name="id" type="int">
+			<generator class="assigned" />
+		</id>
+		<property access="com.liferay.portal.dao.orm.hibernate.LiferayPropertyAccessor" name="publishedDate" type="org.hibernate.type.TimestampType" />
+		<property access="com.liferay.portal.dao.orm.hibernate.LiferayPropertyAccessor" name="employer" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property access="com.liferay.portal.dao.orm.hibernate.LiferayPropertyAccessor" column="text_" name="text" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property access="com.liferay.portal.dao.orm.hibernate.LiferayPropertyAccessor" name="salary" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property access="com.liferay.portal.dao.orm.hibernate.LiferayPropertyAccessor" name="area" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
+		<property access="com.liferay.portal.dao.orm.hibernate.LiferayPropertyAccessor" name="spec" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
+	</class>
 </hibernate-mapping>

@@ -52,6 +52,13 @@ public class VacancyLocalServiceUtil {
 		return getService().addVacancy(vacancy);
 	}
 
+	public static void createOrUpdateVacancy(
+			java.util.List<com.anderfred.model.Vacancy> list)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		getService().createOrUpdateVacancy(list);
+	}
+
 	/**
 	 * Creates a new vacancy with the primary key. Does not add the vacancy to the database.
 	 *
@@ -193,6 +200,10 @@ public class VacancyLocalServiceUtil {
 		return getService().getActionableDynamicQuery();
 	}
 
+	public static java.util.Map<Integer, String> getAreas() {
+		return getService().getAreas();
+	}
+
 	public static
 		com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery
 			getIndexableActionableDynamicQuery() {
@@ -209,11 +220,21 @@ public class VacancyLocalServiceUtil {
 		return getService().getOSGiServiceIdentifier();
 	}
 
+	public static java.util.List<com.anderfred.model.Vacancy>
+		getParametrizedRequest(int area, int spec) {
+
+		return getService().getParametrizedRequest(area, spec);
+	}
+
 	public static com.liferay.portal.kernel.model.PersistedModel
 			getPersistedModel(java.io.Serializable primaryKeyObj)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return getService().getPersistedModel(primaryKeyObj);
+	}
+
+	public static java.util.Map<Integer, String> getSpecs() {
+		return getService().getSpecs();
 	}
 
 	/**
@@ -253,6 +274,12 @@ public class VacancyLocalServiceUtil {
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return getService().getVacancy(id);
+	}
+
+	public static java.util.List<com.anderfred.model.Vacancy>
+		makeExampleRequest() {
+
+		return getService().makeExampleRequest();
 	}
 
 	/**

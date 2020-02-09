@@ -33,6 +33,7 @@ import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.kernel.util.IntegerWrapper;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.OrderByComparatorFactoryUtil;
+import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PersistenceTestRule;
 import com.liferay.portal.test.rule.TransactionalTestRule;
@@ -122,13 +123,17 @@ public class VacancyPersistenceTest {
 
 		Vacancy newVacancy = _persistence.create(pk);
 
-		newVacancy.setPublishedDate(RandomTestUtil.randomString());
+		newVacancy.setPublishedDate(RandomTestUtil.nextDate());
 
 		newVacancy.setEmployer(RandomTestUtil.randomString());
 
 		newVacancy.setText(RandomTestUtil.randomString());
 
 		newVacancy.setSalary(RandomTestUtil.randomString());
+
+		newVacancy.setArea(RandomTestUtil.nextInt());
+
+		newVacancy.setSpec(RandomTestUtil.nextInt());
 
 		_vacancies.add(_persistence.update(newVacancy));
 
@@ -137,12 +142,15 @@ public class VacancyPersistenceTest {
 
 		Assert.assertEquals(existingVacancy.getId(), newVacancy.getId());
 		Assert.assertEquals(
-			existingVacancy.getPublishedDate(), newVacancy.getPublishedDate());
+			Time.getShortTimestamp(existingVacancy.getPublishedDate()),
+			Time.getShortTimestamp(newVacancy.getPublishedDate()));
 		Assert.assertEquals(
 			existingVacancy.getEmployer(), newVacancy.getEmployer());
 		Assert.assertEquals(existingVacancy.getText(), newVacancy.getText());
 		Assert.assertEquals(
 			existingVacancy.getSalary(), newVacancy.getSalary());
+		Assert.assertEquals(existingVacancy.getArea(), newVacancy.getArea());
+		Assert.assertEquals(existingVacancy.getSpec(), newVacancy.getSpec());
 	}
 
 	@Test
@@ -171,7 +179,7 @@ public class VacancyPersistenceTest {
 	protected OrderByComparator<Vacancy> getOrderByComparator() {
 		return OrderByComparatorFactoryUtil.create(
 			"vacancy", "id", true, "publishedDate", true, "employer", true,
-			"text", true, "salary", true);
+			"text", true, "salary", true, "area", true, "spec", true);
 	}
 
 	@Test
@@ -380,13 +388,17 @@ public class VacancyPersistenceTest {
 
 		Vacancy vacancy = _persistence.create(pk);
 
-		vacancy.setPublishedDate(RandomTestUtil.randomString());
+		vacancy.setPublishedDate(RandomTestUtil.nextDate());
 
 		vacancy.setEmployer(RandomTestUtil.randomString());
 
 		vacancy.setText(RandomTestUtil.randomString());
 
 		vacancy.setSalary(RandomTestUtil.randomString());
+
+		vacancy.setArea(RandomTestUtil.nextInt());
+
+		vacancy.setSpec(RandomTestUtil.nextInt());
 
 		_vacancies.add(_persistence.update(vacancy));
 

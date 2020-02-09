@@ -14,12 +14,12 @@
 
 package com.anderfred.model;
 
-import java.io.Serializable;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import org.osgi.annotation.versioning.ProviderType;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  * This class is used by SOAP remote services.
@@ -38,6 +38,8 @@ public class VacancySoap implements Serializable {
 		soapModel.setEmployer(model.getEmployer());
 		soapModel.setText(model.getText());
 		soapModel.setSalary(model.getSalary());
+		soapModel.setArea(model.getArea());
+		soapModel.setSpec(model.getSpec());
 
 		return soapModel;
 	}
@@ -99,11 +101,11 @@ public class VacancySoap implements Serializable {
 		_id = id;
 	}
 
-	public String getPublishedDate() {
+	public Date getPublishedDate() {
 		return _publishedDate;
 	}
 
-	public void setPublishedDate(String publishedDate) {
+	public void setPublishedDate(Date publishedDate) {
 		_publishedDate = publishedDate;
 	}
 
@@ -131,10 +133,28 @@ public class VacancySoap implements Serializable {
 		_salary = salary;
 	}
 
+	public int getArea() {
+		return _area;
+	}
+
+	public void setArea(int area) {
+		_area = area;
+	}
+
+	public int getSpec() {
+		return _spec;
+	}
+
+	public void setSpec(int spec) {
+		_spec = spec;
+	}
+
 	private int _id;
-	private String _publishedDate;
+	private Date _publishedDate;
 	private String _employer;
 	private String _text;
 	private String _salary;
+	private int _area;
+	private int _spec;
 
 }

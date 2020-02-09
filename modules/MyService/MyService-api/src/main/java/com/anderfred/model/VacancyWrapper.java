@@ -16,11 +16,11 @@ package com.anderfred.model;
 
 import com.liferay.portal.kernel.model.ModelWrapper;
 import com.liferay.portal.kernel.model.wrapper.BaseModelWrapper;
+import org.osgi.annotation.versioning.ProviderType;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-
-import org.osgi.annotation.versioning.ProviderType;
 
 /**
  * <p>
@@ -49,6 +49,8 @@ public class VacancyWrapper
 		attributes.put("employer", getEmployer());
 		attributes.put("text", getText());
 		attributes.put("salary", getSalary());
+		attributes.put("area", getArea());
+		attributes.put("spec", getSpec());
 
 		return attributes;
 	}
@@ -61,7 +63,7 @@ public class VacancyWrapper
 			setId(id);
 		}
 
-		String publishedDate = (String)attributes.get("publishedDate");
+		Date publishedDate = (Date)attributes.get("publishedDate");
 
 		if (publishedDate != null) {
 			setPublishedDate(publishedDate);
@@ -84,6 +86,28 @@ public class VacancyWrapper
 		if (salary != null) {
 			setSalary(salary);
 		}
+
+		Integer area = (Integer)attributes.get("area");
+
+		if (area != null) {
+			setArea(area);
+		}
+
+		Integer spec = (Integer)attributes.get("spec");
+
+		if (spec != null) {
+			setSpec(spec);
+		}
+	}
+
+	/**
+	 * Returns the area of this vacancy.
+	 *
+	 * @return the area of this vacancy
+	 */
+	@Override
+	public int getArea() {
+		return model.getArea();
 	}
 
 	/**
@@ -122,7 +146,7 @@ public class VacancyWrapper
 	 * @return the published date of this vacancy
 	 */
 	@Override
-	public String getPublishedDate() {
+	public Date getPublishedDate() {
 		return model.getPublishedDate();
 	}
 
@@ -134,6 +158,16 @@ public class VacancyWrapper
 	@Override
 	public String getSalary() {
 		return model.getSalary();
+	}
+
+	/**
+	 * Returns the spec of this vacancy.
+	 *
+	 * @return the spec of this vacancy
+	 */
+	@Override
+	public int getSpec() {
+		return model.getSpec();
 	}
 
 	/**
@@ -149,6 +183,16 @@ public class VacancyWrapper
 	@Override
 	public void persist() {
 		model.persist();
+	}
+
+	/**
+	 * Sets the area of this vacancy.
+	 *
+	 * @param area the area of this vacancy
+	 */
+	@Override
+	public void setArea(int area) {
+		model.setArea(area);
 	}
 
 	/**
@@ -187,7 +231,7 @@ public class VacancyWrapper
 	 * @param publishedDate the published date of this vacancy
 	 */
 	@Override
-	public void setPublishedDate(String publishedDate) {
+	public void setPublishedDate(Date publishedDate) {
 		model.setPublishedDate(publishedDate);
 	}
 
@@ -199,6 +243,16 @@ public class VacancyWrapper
 	@Override
 	public void setSalary(String salary) {
 		model.setSalary(salary);
+	}
+
+	/**
+	 * Sets the spec of this vacancy.
+	 *
+	 * @param spec the spec of this vacancy
+	 */
+	@Override
+	public void setSpec(int spec) {
+		model.setSpec(spec);
 	}
 
 	/**
